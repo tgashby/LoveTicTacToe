@@ -1,3 +1,5 @@
+require("grid")
+
 xLocs = {}
 oLocs = {}
 
@@ -25,14 +27,18 @@ end
 
 function love.keypressed(key)
 	if key == "escape" then
-		love.event.push("quit")   -- actually causes the app to quit
+		love.event.push("quit")
 	end
 end
 
 function love.mousereleased(x, y, button)
+	local gridX
+	local gridY
+	gridX, gridY = grid.findNearestCell(x, y)
+ 
 	if button == "l" then
-		table.insert(xLocs, {x = x, y = y})
+		table.insert(xLocs, {x = gridX, y = gridY})
 	elseif button == "r" then
-		table.insert(oLocs, {x = x, y = y})
+		table.insert(oLocs, {x = gridX, y = gridY})
 	end
 end
