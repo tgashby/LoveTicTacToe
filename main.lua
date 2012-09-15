@@ -1,7 +1,5 @@
 require("grid")
 
-xLocs = {}
-oLocs = {}
 invalidMoveTimer = 0
 xTurn = true
 whoseTurn = xImage
@@ -29,12 +27,10 @@ function love.draw()
 		love.graphics.print("Invalid Move", 30, 500)
 	end
 
-	for k,v in pairs(xLocs) do
-		love.graphics.draw(xImage, v.x, v.y)
-	end
-
-	for k,v in pairs(oLocs) do
-		love.graphics.draw(oImage, v.x, v.y)
+	for k,v in pairs(grid.cells) do
+		if v.image ~= nil then
+			love.graphics.draw(v.image, v.x, v.y)
+		end
 	end
 end
 
@@ -51,21 +47,12 @@ function love.keypressed(key)
 end
 
 function love.mousereleased(x, y, button)
-	local gridX
-	local gridY
-	gridX, gridY = grid.findNearestCell(x, y)
+	local validMove = grid.registerMove(x, y, xTurn)
 
-	if gridX == nil then
-		invalidMoveTimer = 2
-	else
-		print("Pushing: " .. gridX .. ", " .. gridY)
-
-		if xTurn then
-			table.insert(xLocs, {x = gridX, y = gridY})
-		else
-			table.insert(oLocs, {x = gridX, y = gridY})
-		end
-
+	if validMove then
+		-- Go to next player's turn
 		xTurn = not xTurn
+	else
+		invalidMoveTimer = 2
 	end
 end
